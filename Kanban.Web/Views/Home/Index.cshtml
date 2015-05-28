@@ -1,0 +1,65 @@
+﻿@{
+	ViewBag.Title = "Home Page";
+}
+@section scripts
+{
+	<script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+	<script src="~/signalr/hubs"></script>
+	<script src="~/Scripts/angular.min.js"></script>
+	<script src="~/app/kanbanApp.js"></script>
+	<script src="~/app/CountingController.js"></script>
+
+	<script>
+	</script>
+}
+
+@section head {
+	<style>
+		.line {
+			border-width: 2px;
+			border-color: blue;
+			background: lightgray;
+		}
+	</style>
+}
+<div ng-app="kanbanApp">
+	<div class="row" ng-controller="CountingController as vm">
+		<div class="col-lg-9">
+			<div class="container">
+				<div class="row">
+					<div class="jumbotron">
+						<div class="container">
+							<div class="row">總訂單數：{{vm.total}}</div>
+							<div class="row">
+								已完成數：{{vm.finished}}
+							</div>
+							<div class="row">待完成數：{{vm.total - vm.finished}}</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="container">
+						<div class="row" ng-repeat="row in [1,2,3,4]">
+							<div class="col-lg-3 line" ng-repeat="column in [1, 2, 3]">{{(row -1) * 3 + column}} 線訂單數：{{vm.lines[(row -1) * 3 + column -1]}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3">
+			<table border="1">
+				<thead>
+					<tr>
+						<th>時段</th>
+						<th>數量</th>
+					</tr>
+				</thead>
+				<tr ng-repeat="(key, value) in vm.segments">
+					<td>{{key}}</td>
+					<td>{{value}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
