@@ -26,9 +26,16 @@ namespace ClientSample
 
 		private void Send(int lineId)
 		{
-			var req = new WebClient();
-			req.UploadString("http://localhost:4193/api/increase?lineid=" +
-			                   lineId, string.Empty);
+			ThreadPool.QueueUserWorkItem((t) =>
+						{
+							try
+							{
+								var req = new WebClient();
+								req.UploadString("http://localhost:4193/api/increase?lineid=" +
+																	 lineId, string.Empty);
+							}
+							catch (Exception ex) { }
+						});
 		}
 
 		private void button2_Click(object sender, EventArgs e)
@@ -37,14 +44,15 @@ namespace ClientSample
 
 			int length = int.Parse(maxLength.Text);
 			int sleep = int.Parse(sleepTextbox.Text);
-			Parallel.For(1, length + 1, (i) =>
+			Task.Factory.StartNew(() =>
 			{
-				var lineId = random.Next(12) + 1;
-				Send(lineId);
-				Thread.Sleep(random.Next(sleep));
+				Parallel.For(1, length + 1, (i) =>
+				{
+					var lineId = random.Next(12) + 1;
+					Send(lineId);
+					Thread.Sleep(random.Next(sleep));
+				});
 			});
-
-			
 		}
 
 		private void label2_Click(object sender, EventArgs e)
